@@ -5,18 +5,14 @@
  */
 package com.srg.securitymock.resources;
 
-import com.srg.securitymock.resources.responses.GenericErrorResponse;
 import com.srg.securitymock.resources.responses.ProfileResponse;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 import javax.ws.rs.core.MediaType;
@@ -25,7 +21,6 @@ import org.pac4j.http.profile.IpProfile;
 import org.pac4j.jax.rs.annotations.Pac4JProfile;
 import org.pac4j.jax.rs.annotations.Pac4JSecurity;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
-import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 
 /**
@@ -58,6 +53,14 @@ public class TestResource {
     public ProfileResponse getProfile(@Pac4JProfile IpProfile profile) {
         ProfileResponse p = this.generateToken(profile);
         return p;
+    }
+    
+    @GET()
+    @Path("testParams")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Pac4JSecurity(clients = "ParameterClient, HeaderClient")
+    public String getProfile(@BeanParam TestParams params) {        
+        return params.getParam1() + ";" + params.getParam2();
     }
 
     public ProfileResponse generateToken(IpProfile profile) {
